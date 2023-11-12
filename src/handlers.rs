@@ -5,6 +5,7 @@ use sqlx::PgPool;
 #[derive(Serialize)]
 pub struct Quote {
     id: uuid::Uuid,
+    quote: String,
     book: String,
     inserted_at: chrono::DateTime<chrono::Utc>,
     updated_at: chrono::DateTime<chrono::Utc>,
@@ -23,11 +24,12 @@ impl Quote {
     }
 }
 
+#[derive(Debug, Deserialize)]
 pub struct CreateQuote {
     book: String,
     quote: String,
 }
-pub async fn health() -> http:StatusCode {
+pub async fn health() -> http::StatusCode {
     http::StatusCode::OK
 }
 
@@ -47,7 +49,7 @@ pub async fn create_quote(
     .bind(&quote.quote)
     .bind(&quote.inserted_at)
     .bind(&quote.updated_at)
-    .executl(&pool)
+    .execute(&pool)
     .await;
 
     match res {
